@@ -29,3 +29,4 @@ sessions/*.json
 evolve/scores.json
 evolve/prompts/
 evolve/.DS_Store
+docs/VIDEO_SCRIPT.md

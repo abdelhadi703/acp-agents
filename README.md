@@ -51,6 +51,32 @@ Both versions implement the same protocols: **ACP** (Agent Communication Protoco
 
 ---
 
+## Demo Results — Two Systems Side by Side
+
+### Ollama Cloud (9 agents on HTTP ports)
+
+<div align="center">
+<img src="docs/tmux-monitor.png" alt="tmux monitor with 9 Ollama agents" width="900">
+</div>
+
+Real agents processing tasks simultaneously in tmux, with inter-agent delegation visible in real-time.
+
+### Anthropic (Claude models via Task tool)
+
+Same agents, powered by Claude models (Opus for deep reasoning, Sonnet for code, Haiku for speed):
+
+| Agent | Model | Task | Result |
+|-------|-------|------|--------|
+| CODE (Sonnet) | `claude-sonnet-4-6` | Write `is_prime()` with tests | O(sqrt(n)), error handling, 8 tests |
+| SECURITY (Opus) | `claude-opus-4-6` | Audit code for vulnerabilities | Found CWE-78 (injection) + CWE-22 (path traversal) |
+| I18N (Haiku) | `claude-haiku-4-5` | Translate to ES/PT/AR | 3 languages, professional quality |
+
+> See full demo results in [docs/anthropic-demo.md](docs/anthropic-demo.md)
+
+Both systems implement the same ACP/A2A protocol and can be used interchangeably depending on your needs.
+
+---
+
 ## Architecture
 
 ```
