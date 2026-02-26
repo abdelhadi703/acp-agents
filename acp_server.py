@@ -18,6 +18,13 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s] %(message)s')
 logger = logging.getLogger("acp")
 
+# Features AMBER ICI
+from vector_store import VectorStore
+from telemetry import telemetry_registry
+from graph import Graph
+from file_ingestion import FileIngestion
+from fractal_memory import FractalMemory
+
 # Configuration des agents (10 agents)
 AGENTS = {
     "orchestrator": {
@@ -179,6 +186,12 @@ class ACPAgent:
         self.total_prompt_tokens = 0
         self.total_eval_tokens = 0
         self.message_count = 0
+        # Features AMBER ICI (singletons partagés entre tous les agents)
+        if not hasattr(ACPAgent, '_vector_store'):
+            ACPAgent._vector_store = VectorStore()
+            ACPAgent._graph = Graph()
+            ACPAgent._file_ingestion = FileIngestion(vector_store=ACPAgent._vector_store)
+            ACPAgent._fractal_memory = FractalMemory(vector_store=ACPAgent._vector_store)
 
     async def fetch_model_info(self):
         """Récupérer les infos du modèle (context_length, capabilities) via Ollama API"""
@@ -241,11 +254,31 @@ class ACPAgent:
                 if eval_tokens == 0:
                     content = result.get("message", {}).get("content", "")
                     eval_tokens = max(len(content) // 4, 1)
+                # Telemetry recording
+                eval_duration = result.get('eval_duration', 0)
+                prompt_eval_duration = result.get('prompt_eval_duration', 0)
+                if eval_tokens > 0 and eval_duration > 0:
+                    telemetry_registry.record(
+                        self.name, eval_tokens, eval_duration,
+                        prompt_tokens, prompt_eval_duration
+                    )
                 with self._lock:
                     self.total_prompt_tokens += prompt_tokens
                     self.total_eval_tokens += eval_tokens
                     self.message_count += 1
-                return result["message"]["content"]
+                content = result["message"]["content"]
+                # Auto-indexation dans le vector store
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        asyncio.ensure_future(
+                            ACPAgent._vector_store.index(content, metadata={
+                                "agent": self.name, "type": "response"
+                            })
+                        )
+                except Exception:
+                    pass
+                return content
         except Exception as e:
             logger.error(f"Erreur call_ollama: {e}")
             return "Erreur interne lors de l'appel au modèle"
@@ -271,9 +304,17 @@ class ACPAgent:
                                 full_content += token
                                 yield token
                             if chunk.get("done"):
+                                eval_c = chunk.get("eval_count", len(full_content) // 4)
+                                eval_d = chunk.get("eval_duration", 0)
+                                pe_c = chunk.get("prompt_eval_count", len(prompt) // 4)
+                                pe_d = chunk.get("prompt_eval_duration", 0)
+                                if eval_c > 0 and eval_d > 0:
+                                    telemetry_registry.record(
+                                        self.name, eval_c, eval_d, pe_c, pe_d
+                                    )
                                 with self._lock:
-                                    self.total_prompt_tokens += chunk.get("prompt_eval_count", len(prompt) // 4)
-                                    self.total_eval_tokens += chunk.get("eval_count", len(full_content) // 4)
+                                    self.total_prompt_tokens += pe_c
+                                    self.total_eval_tokens += eval_c
                                     self.message_count += 1
         except Exception as e:
             logger.error(f"Erreur streaming: {e}")

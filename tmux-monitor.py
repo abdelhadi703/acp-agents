@@ -56,6 +56,15 @@ def fetch_status(port):
         return None
 
 
+def fetch_telemetry(port):
+    try:
+        req = urllib.request.Request(f"http://127.0.0.1:{port}/telemetry")
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            return json.loads(resp.read())
+    except Exception:
+        return None
+
+
 def format_tokens(t):
     if t >= 1_000_000:
         return f"{t / 1_000_000:.1f}M"
@@ -77,7 +86,7 @@ def indicator(pct):
     return "\u25cf"       # ● (vert)
 
 
-def build_title(agent, data):
+def build_title(agent, data, telemetry=None):
     if not data:
         return f"{agent['model_short']} | OFFLINE | {agent['name']}"
 
@@ -90,7 +99,14 @@ def build_title(agent, data):
     tok_d = format_tokens(tokens)
     bar = make_bar(pct)
 
-    return f"{agent['model_short']} | {indicator(pct)} {tok_d}/{ctx_k} ({pct}%) {bar} | \U0001f4e8 {msgs} | {agent['name']}"
+    # TPS depuis telemetry
+    tps_str = ""
+    if telemetry:
+        tps = telemetry.get("current_tps", 0)
+        if tps > 0:
+            tps_str = f" | \u26a1{tps:.1f}t/s"
+
+    return f"{agent['model_short']} | {indicator(pct)} {tok_d}/{ctx_k} ({pct}%) {bar}{tps_str} | \U0001f4e8 {msgs} | {agent['name']}"
 
 
 def main():
@@ -102,7 +118,8 @@ def main():
             for agent in AGENTS:
                 target = f"{SESSION}:0.{agent['pane']}"
                 data = fetch_status(agent["port"])
-                title = build_title(agent, data)
+                telemetry = fetch_telemetry(agent["port"])
+                title = build_title(agent, data, telemetry)
                 tmux("select-pane", "-t", target, "-T", title)
 
             time.sleep(INTERVAL)

@@ -118,6 +118,48 @@ def tools_list():
                     "message": {"type": "string", "description": "Message à envoyer"}
                 },
                 "required": ["agent", "session_id", "message"]
+            }},
+            # === Features AMBER ICI ===
+            {"name": "archive_search", "description": "Rechercher dans l'archive vectorielle des agents ACP (semantic search via embeddings)", "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Texte de recherche sémantique"},
+                    "top_k": {"type": "integer", "description": "Nombre de résultats (défaut: 5, max: 50)"}
+                },
+                "required": ["query"]
+            }},
+            {"name": "archive_index", "description": "Indexer du texte dans l'archive vectorielle ACP", "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "text": {"type": "string", "description": "Texte à indexer"},
+                    "agent": {"type": "string", "description": "Agent cible (défaut: code)"},
+                    "metadata": {"type": "object", "description": "Métadonnées optionnelles"}
+                },
+                "required": ["text"]
+            }},
+            {"name": "upload_file", "description": "Uploader un fichier (PDF/DOCX/TXT/MD) vers les agents ACP pour extraction et indexation", "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "agent": {"type": "string", "description": "Agent cible (défaut: code)"},
+                    "filename": {"type": "string", "description": "Nom du fichier avec extension"},
+                    "content": {"type": "string", "description": "Contenu du fichier encodé en base64"},
+                    "metadata": {"type": "object", "description": "Métadonnées optionnelles"}
+                },
+                "required": ["filename", "content"]
+            }},
+            {"name": "list_files", "description": "Lister les fichiers uploadés dans les agents ACP", "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "agent": {"type": "string", "description": "Agent cible (défaut: code)"}
+                }
+            }},
+            {"name": "get_telemetry", "description": "Obtenir les statistiques de télémétrie (tokens/sec, débit) de tous les agents ACP", "inputSchema": {
+                "type": "object",
+                "properties": {}
+            }},
+            {"name": "get_graph", "description": "Obtenir le graphe de corrélations agents/tâches/fichiers des agents ACP", "inputSchema": {
+                "type": "object",
+                "properties": {}
             }}
         ]
     }
@@ -183,6 +225,121 @@ def handle(req):
             except Exception as e:
                 logger.error(f"Erreur session message: {e}")
                 return {"content": [{"type": "text", "text": "Erreur de communication avec l'agent"}]}
+        # === Features AMBER ICI ===
+        elif name == "archive_search":
+            query = args.get("query", "")
+            top_k = args.get("top_k", 5)
+            agent_name = "code"
+            try:
+                r = requests.post(
+                    f"http://localhost:{AGENTS[agent_name]['port']}/archive/search",
+                    json={"query": query, "top_k": top_k}, timeout=30
+                )
+                data = r.json()
+                results = data.get("results", [])
+                txt = f"Archive Search: {len(results)} résultats\n\n"
+                for i, res in enumerate(results):
+                    txt += f"{i+1}. [score: {res['score']}] {res['text'][:200]}\n"
+                    if res.get("metadata"):
+                        txt += f"   meta: {json.dumps(res['metadata'])}\n"
+                return {"content": [{"type": "text", "text": txt}]}
+            except Exception as e:
+                return {"content": [{"type": "text", "text": f"Erreur archive search: {e}"}]}
+        elif name == "archive_index":
+            text = args.get("text", "")
+            agent_name = args.get("agent", "code")
+            meta = args.get("metadata", {})
+            if agent_name not in AGENTS:
+                agent_name = "code"
+            try:
+                r = requests.post(
+                    f"http://localhost:{AGENTS[agent_name]['port']}/archive/index",
+                    json={"text": text, "metadata": meta}, timeout=30
+                )
+                data = r.json()
+                return {"content": [{"type": "text", "text": f"Indexé: {data.get('id', '?')} — {data.get('status', '?')}"}]}
+            except Exception as e:
+                return {"content": [{"type": "text", "text": f"Erreur indexation: {e}"}]}
+        elif name == "upload_file":
+            agent_name = args.get("agent", "code")
+            filename = args.get("filename", "")
+            content = args.get("content", "")
+            meta = args.get("metadata", {})
+            if agent_name not in AGENTS:
+                agent_name = "code"
+            try:
+                r = requests.post(
+                    f"http://localhost:{AGENTS[agent_name]['port']}/files/upload",
+                    json={"filename": filename, "content": content, "metadata": meta},
+                    timeout=120
+                )
+                data = r.json()
+                if "error" in data:
+                    return {"content": [{"type": "text", "text": f"Erreur upload: {data['error']}"}]}
+                txt = f"Fichier uploadé: {data.get('filename', '?')}\n"
+                txt += f"ID: {data.get('id', '?')}\n"
+                txt += f"Taille: {data.get('size_bytes', 0)} bytes\n"
+                txt += f"Texte extrait: {data.get('text_extracted', 0)} chars\n"
+                txt += f"Chunks indexés: {data.get('chunks_indexed', 0)}"
+                return {"content": [{"type": "text", "text": txt}]}
+            except Exception as e:
+                return {"content": [{"type": "text", "text": f"Erreur upload: {e}"}]}
+        elif name == "list_files":
+            agent_name = args.get("agent", "code")
+            if agent_name not in AGENTS:
+                agent_name = "code"
+            try:
+                r = requests.get(
+                    f"http://localhost:{AGENTS[agent_name]['port']}/files", timeout=10
+                )
+                data = r.json()
+                files = data.get("files", [])
+                txt = f"Fichiers uploadés: {len(files)}\n\n"
+                for f in files:
+                    txt += f"  — {f['filename']} ({f['size_bytes']} bytes, {f['chunks_indexed']} chunks)\n"
+                return {"content": [{"type": "text", "text": txt}]}
+            except Exception as e:
+                return {"content": [{"type": "text", "text": f"Erreur list files: {e}"}]}
+        elif name == "get_telemetry":
+            txt = "Télémétrie ACP Agents\n\n"
+            for ag_name, cfg in AGENTS.items():
+                try:
+                    r = requests.get(
+                        f"http://localhost:{cfg['port']}/telemetry", timeout=3
+                    )
+                    data = r.json()
+                    tps = data.get("current_tps", 0)
+                    peak = data.get("peak_tps", 0)
+                    avg = data.get("avg_tps", 0)
+                    t_in = data.get("total_tokens_in", 0)
+                    t_out = data.get("total_tokens_out", 0)
+                    txt += f"  {ag_name}: {tps:.1f} tok/s (avg: {avg:.1f}, peak: {peak:.1f}) | in: {t_in} out: {t_out}\n"
+                except Exception:
+                    txt += f"  {ag_name}: offline\n"
+            return {"content": [{"type": "text", "text": txt}]}
+        elif name == "get_graph":
+            agent_name = "code"
+            try:
+                r = requests.get(
+                    f"http://localhost:{AGENTS[agent_name]['port']}/graph", timeout=10
+                )
+                data = r.json()
+                nodes = data.get("nodes", [])
+                edges = data.get("edges", [])
+                txt = f"Graph ACP: {len(nodes)} noeuds, {len(edges)} arêtes\n\n"
+                txt += "Noeuds:\n"
+                for n in nodes[:20]:
+                    txt += f"  [{n['type']}] {n['id']}: {n['label']}\n"
+                txt += "\nArêtes:\n"
+                for e in edges[:20]:
+                    txt += f"  {e['source']} —{e['type']}→ {e['target']}\n"
+                if len(nodes) > 20:
+                    txt += f"\n... et {len(nodes) - 20} noeuds de plus\n"
+                if len(edges) > 20:
+                    txt += f"... et {len(edges) - 20} arêtes de plus\n"
+                return {"content": [{"type": "text", "text": txt}]}
+            except Exception as e:
+                return {"content": [{"type": "text", "text": f"Erreur graph: {e}"}]}
         elif name.startswith("ask_"):
             agent = name.replace("ask_", "")
             if agent in AGENTS:

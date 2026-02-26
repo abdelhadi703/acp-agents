@@ -60,6 +60,8 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from acp_server import AGENTS, OLLAMA_API, ACPAgent, load_agent_card, load_all_cards, Session
+from telemetry import telemetry_registry
+from file_ingestion import FileIngestion
 
 
 def tw():
@@ -156,6 +158,14 @@ def execute_delegations(response_text, agent, depth=0):
 
         print_delegate_out(target_name, message, depth)
 
+        # Enregistrer la délégation dans le graph
+        try:
+            ACPAgent._graph.record_delegation(
+                agent.name, target_name, message[:200]
+            )
+        except Exception:
+            pass
+
         target_port = AGENTS[target_name]['port']
         try:
             r = httpx.post(
@@ -250,6 +260,28 @@ class AgentHandler(BaseHTTPRequestHandler):
             self._send_json({
                 "sessions": [s.to_dict() for s in self.agent.sessions.values()]
             })
+        # === Features AMBER ICI ===
+        elif path == '/archive/stats':
+            self._send_json(ACPAgent._vector_store.stats())
+        elif path == '/telemetry':
+            tel = telemetry_registry.get_or_create(self.agent.name)
+            self._send_json(tel.get_stats())
+        elif path == '/telemetry/all':
+            self._send_json(telemetry_registry.get_all_stats())
+        elif path == '/graph':
+            self._send_json(ACPAgent._graph.get_graph())
+        elif path == '/files':
+            self._send_json({"files": ACPAgent._file_ingestion.list_files()})
+        elif path.startswith('/files/') and path.count('/') == 2:
+            file_id = path.split('/')[2]
+            if not re.match(r'^[a-f0-9]{16}$', file_id):
+                self._send_json({"error": "Invalid file ID"}, 400)
+            else:
+                result = ACPAgent._file_ingestion.get_file(file_id)
+                if result:
+                    self._send_json(result)
+                else:
+                    self._send_json({"error": "File not found"}, 404)
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -265,8 +297,9 @@ class AgentHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         content_length = int(self.headers.get('Content-Length', 0))
 
-        # Limite de taille du body (1 MB)
-        if content_length > MAX_BODY_SIZE:
+        # Limite de taille du body (1 MB par défaut, 48 MB pour uploads fichiers)
+        max_size = 48_000_000 if path == '/files/upload' else MAX_BODY_SIZE
+        if content_length > max_size:
             self._send_json({"error": "Payload too large"}, 413)
             return
 
@@ -402,6 +435,83 @@ class AgentHandler(BaseHTTPRequestHandler):
             loop.close()
             print_delegate_in(target, response)
             self._send_json({"delegated_to": target, "response": response})
+
+        # === Features AMBER ICI ===
+        elif path == '/archive/index':
+            text = data.get('text', '')
+            meta = data.get('metadata', {})
+            if not text or len(text) > 100_000:
+                self._send_json({"error": "Texte invalide ou trop long"}, 400)
+                return
+            loop = asyncio.new_event_loop()
+            entry_id = loop.run_until_complete(
+                ACPAgent._vector_store.index(text, metadata=meta)
+            )
+            loop.close()
+            if entry_id:
+                self._send_json({"id": entry_id, "status": "indexed"})
+            else:
+                self._send_json({"error": "Échec indexation (modèle embedding indisponible ?)"}, 500)
+
+        elif path == '/archive/search':
+            query = data.get('query', '')
+            top_k = data.get('top_k', 5)
+            if not query or len(query) > 10_000:
+                self._send_json({"error": "Query invalide"}, 400)
+                return
+            if not isinstance(top_k, int) or top_k < 1:
+                top_k = 5
+            loop = asyncio.new_event_loop()
+            results = loop.run_until_complete(
+                ACPAgent._vector_store.search(query, top_k=top_k)
+            )
+            loop.close()
+            self._send_json({"results": results, "count": len(results)})
+
+        elif path == '/files/upload':
+            filename = data.get('filename', '')
+            content_b64 = data.get('content', '')
+            meta = data.get('metadata', {})
+            if not filename or not content_b64:
+                self._send_json({"error": "filename et content requis"}, 400)
+                return
+            loop = asyncio.new_event_loop()
+            result = loop.run_until_complete(
+                ACPAgent._file_ingestion.upload(filename, content_b64, metadata=meta)
+            )
+            loop.close()
+            if "error" in result:
+                self._send_json(result, 400)
+            else:
+                self._send_json(result)
+
+        elif path == '/graph/node':
+            node_id = data.get('id', '')
+            node_type = data.get('type', '')
+            label = data.get('label', '')
+            props = data.get('properties', {})
+            if not node_id or not node_type or not label:
+                self._send_json({"error": "id, type et label requis"}, 400)
+                return
+            node = ACPAgent._graph.add_node(node_id, node_type, label, props)
+            if node:
+                self._send_json(node)
+            else:
+                self._send_json({"error": "Noeud invalide ou limite atteinte"}, 400)
+
+        elif path == '/graph/edge':
+            source = data.get('source', '')
+            target = data.get('target', '')
+            edge_type = data.get('type', '')
+            props = data.get('properties', {})
+            if not source or not target or not edge_type:
+                self._send_json({"error": "source, target et type requis"}, 400)
+                return
+            edge = ACPAgent._graph.add_edge(source, target, edge_type, props)
+            if edge:
+                self._send_json(edge)
+            else:
+                self._send_json({"error": "Arête invalide"}, 400)
 
         else:
             self._send_json({"error": "Not found"}, 404)

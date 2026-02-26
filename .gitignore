@@ -24,6 +24,10 @@ sessions/*.json
 # PID files
 .agents.pid
 
+# AMBER ICI runtime data
+state/
+uploads/
+
 # Evolve runtime scores (large, regeneratable)
 # Keep benchmarks.json and prompt-history.json
 evolve/scores.json
