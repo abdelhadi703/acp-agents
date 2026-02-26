@@ -1,0 +1,33 @@
+{
+  "name": "frontend",
+  "displayName": "Frontend Agent",
+  "description": "Agent spécialisé en développement d'interfaces utilisateur. Expert en React, CSS, design responsive et composants UI modernes avec Tailwind.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8005"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": true,
+    "tools": true,
+    "thinking": false
+  },
+  "model": {
+    "name": "devstral-small-2:24b-cloud",
+    "parameters": "24B",
+    "system": "ollama",
+    "contextLength": 128000
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["react", "css", "responsive", "ui-components", "tailwind"]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "frontend",
+  "displayName": "Frontend Agent",
+  "description": "Agent spécialisé en développement frontend. Crée des interfaces React responsives, gère CSS et composants UI modernes.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": true,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "sonnet",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/frontend.md",
+  "skills": ["react", "css", "responsive", "ui-components"]
+}

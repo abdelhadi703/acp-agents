@@ -1,0 +1,24 @@
+{
+  "name": "security",
+  "displayName": "Security Agent",
+  "description": "Agent spécialisé en sécurité informatique et conformité. Audit de code, détection de vulnérabilités, pentesting et respect des normes OWASP.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "opus",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/security.md",
+  "skills": ["audit", "vulnerability-detection", "owasp", "pentest"]
+}

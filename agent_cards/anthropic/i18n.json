@@ -1,0 +1,24 @@
+{
+  "name": "i18n",
+  "displayName": "i18n Agent",
+  "description": "Agent spécialisé en internationalisation et localisation. Traductions multilingues, gestion i18next et adaptation culturelle.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "haiku",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/i18n.md",
+  "skills": ["translation", "localization", "i18next"]
+}

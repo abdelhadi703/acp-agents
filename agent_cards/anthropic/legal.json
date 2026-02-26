@@ -1,0 +1,24 @@
+{
+  "name": "legal",
+  "displayName": "Legal Agent",
+  "description": "Agent spécialisé en aspects juridiques et conformité. Expertise RGPD, analyse juridique, conformité légale et protection des données.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "opus",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/legal.md",
+  "skills": ["rgpd", "compliance", "legal-analysis", "privacy"]
+}

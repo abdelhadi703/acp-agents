@@ -1,0 +1,33 @@
+{
+  "name": "i18n",
+  "displayName": "I18n Agent",
+  "description": "Agent expert en internationalisation et localisation. Spécialisé en traduction multilingue, support RTL, pluralisation et intégration i18next.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8008"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "qwen3.5:cloud",
+    "parameters": "122B",
+    "system": "ollama",
+    "contextLength": 122000
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["translation", "i18next", "localization", "rtl", "pluralization"]
+}

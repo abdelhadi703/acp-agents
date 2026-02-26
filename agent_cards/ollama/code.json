@@ -1,0 +1,33 @@
+{
+  "name": "code",
+  "displayName": "Code Agent",
+  "description": "Agent expert en développement logiciel. Spécialisé en génération de code, refactoring, debugging et tests pour TypeScript, Python et JavaScript.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8003"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": false,
+    "tools": true,
+    "thinking": false
+  },
+  "model": {
+    "name": "qwen3-coder-next:cloud",
+    "parameters": "80B",
+    "system": "ollama",
+    "contextLength": 80000
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["typescript", "python", "refactoring", "debugging", "testing", "jsdoc"]
+}

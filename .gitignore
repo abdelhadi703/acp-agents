@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/*.log
+
+# Sessions (runtime data)
+sessions/*.json
+
+# IDE
+.vscode/
+.idea/
+
+# PID files
+.agents.pid
+
+# Evolve runtime scores (large, regeneratable)
+# Keep benchmarks.json and prompt-history.json
+evolve/scores.json
+evolve/prompts/
+evolve/.DS_Store

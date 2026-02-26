@@ -1,0 +1,24 @@
+{
+  "name": "design",
+  "displayName": "Design Agent",
+  "description": "Agent spécialisé en UX/UI design. Crée des maquettes, wireframes et designs accessibles avec une expertise en ergonomie.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": true,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "sonnet",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/design.md",
+  "skills": ["ux-design", "wireframes", "accessibility"]
+}

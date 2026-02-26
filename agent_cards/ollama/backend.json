@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "displayName": "Backend Agent",
+  "description": "Agent expert en architecture backend et infrastructure. Spécialisé en conception d'API, bases de données, PostgreSQL, Node.js et infrastructures cloud.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8006"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": false,
+    "tools": true,
+    "thinking": false
+  },
+  "model": {
+    "name": "devstral-2:123b-cloud",
+    "parameters": "123B",
+    "system": "ollama",
+    "contextLength": 123000
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["api-design", "sql", "postgresql", "nodejs", "express", "infrastructure"]
+}

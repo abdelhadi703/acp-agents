@@ -1,0 +1,24 @@
+{
+  "name": "code",
+  "displayName": "Code Agent",
+  "description": "Agent spécialisé en développement logiciel, refactoring et debugging. Maîtrise TypeScript, Python et technologies modernes.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "sonnet",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/code.md",
+  "skills": ["typescript", "python", "refactoring", "debugging"]
+}

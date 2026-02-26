@@ -1,0 +1,33 @@
+{
+  "name": "legal",
+  "displayName": "Legal Agent",
+  "description": "Agent spécialisé en analyse juridique et conformité. Expert en RGPD, conformité légale, analyse de termes de service et protection des données.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8010"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "gpt-oss:120b-cloud",
+    "parameters": "116.8B",
+    "system": "ollama",
+    "contextLength": 116800
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["rgpd", "compliance", "legal-analysis", "terms-of-service", "privacy"]
+}

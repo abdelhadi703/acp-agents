@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "created": "2026-02-25",
+  "agents": {
+    "code": {
+      "current": "v2",
+      "versions": {
+        "v1": {
+          "date": "2026-02-25",
+          "score_moyen": 9.23,
+          "file": "code.v1.md"
+        },
+        "v2": {
+          "date": "2026-02-26",
+          "score_moyen": 10.00,
+          "file": "code.v2.md",
+          "mutations": [
+            "Règle #8 : sécurité renforcée — échappement HTML obligatoire, DOMPurify, encodage serveur",
+            "Règle #10 : JSDoc OBLIGATOIRE et VISIBLE dans la réponse"
+          ],
+          "erreurs_ciblees": ["FMT: JSDoc absent", "SEC: sécurité 8.6/10"]
+        }
+      }
+    },
+    "security": { "current": "v1", "versions": { "v1": { "date": "2026-02-25", "score_moyen": 9.97 } } },
+    "frontend": { "current": "v1", "versions": { "v1": { "date": "2026-02-25", "score_moyen": 9.76 } } },
+    "backend": { "current": "v1", "versions": { "v1": { "date": "2026-02-25", "score_moyen": 9.86 } } },
+    "i18n": {
+      "current": "v2",
+      "versions": {
+        "v1": {
+          "date": "2026-02-25",
+          "score_moyen": 9.25,
+          "file": "i18n.v1.md"
+        },
+        "v2": {
+          "date": "2026-02-26",
+          "score_moyen": 9.82,
+          "file": "i18n.v2.md",
+          "mutations": [
+            "Règle #2 : clés sémantiques TOUJOURS fournies en JSON, même si non demandé",
+            "Règle #3 : contexte avec champ _context ou commentaire par clé",
+            "Règle #11 (nouvelle) : zéro doublon — vérifier absence clés dupliquées"
+          ],
+          "erreurs_ciblees": ["OMI: clés i18n structurées absentes", "LOG: clé ns dupliquée"]
+        }
+      }
+    },
+    "design": { "current": "v1", "versions": { "v1": { "date": "2026-02-25", "score_moyen": 10.00 } } },
+    "legal": { "current": "v1", "versions": { "v1": { "date": "2026-02-25", "score_moyen": 10.00 } } },
+    "vision": { "current": "v1", "versions": {} },
+    "generalist": { "current": "v1", "versions": { "v1": { "date": "2026-02-25", "score_moyen": 9.73 } } }
+  }
+}

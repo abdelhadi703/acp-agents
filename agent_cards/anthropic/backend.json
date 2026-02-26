@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "displayName": "Backend Agent",
+  "description": "Agent spécialisé en développement backend, APIs et infrastructure. Expertise en Node.js, SQL et architecture système.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "sonnet",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/backend.md",
+  "skills": ["api-design", "sql", "nodejs", "infrastructure"]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "generalist",
+  "displayName": "Generalist Agent",
+  "description": "Agent polyvalent pour recherche, synthèse et tâches multi-domaines. Optimisé pour rapidité et polyvalence.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM-Anthropic",
+    "system": "anthropic-task-tool"
+  },
+  "capabilities": {
+    "streaming": false,
+    "multimodal": false,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "haiku",
+    "provider": "anthropic",
+    "contextLength": 200000
+  },
+  "promptFile": "~/.claude/agents/generalist.md",
+  "skills": ["research", "summarization", "multi-task"]
+}

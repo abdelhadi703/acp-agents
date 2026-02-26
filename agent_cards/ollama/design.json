@@ -1,0 +1,33 @@
+{
+  "name": "design",
+  "displayName": "Design Agent",
+  "description": "Agent expert en UX/UI design et création de maquettes. Spécialisé en théorie des couleurs, accessibilité, prototypage Figma et expérience utilisateur.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8009"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": true,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "kimi-k2.5:cloud",
+    "parameters": "Unknown",
+    "system": "ollama",
+    "contextLength": 131072
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["ux-design", "wireframes", "color-theory", "accessibility", "figma"]
+}

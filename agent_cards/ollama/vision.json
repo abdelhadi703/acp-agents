@@ -1,0 +1,33 @@
+{
+  "name": "vision",
+  "displayName": "Vision Agent",
+  "description": "Agent spécialisé en vision multimodale, OCR et analyse d'images. Capable de traiter des screenshots, des images complexes et d'extraire du texte avec haute précision.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8002"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": true,
+    "tools": true,
+    "thinking": true
+  },
+  "model": {
+    "name": "qwen3-vl:235b-cloud",
+    "parameters": "235B",
+    "system": "ollama",
+    "contextLength": 235000
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["image-analysis", "ocr", "screenshot-analysis", "visual-qa"]
+}

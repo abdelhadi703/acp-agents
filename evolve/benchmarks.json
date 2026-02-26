@@ -1,0 +1,387 @@
+{
+  "version": 1,
+  "created": "2026-02-25",
+  "description": "Benchmarks initiaux pour l'évaluation des 9 agents GLM",
+  "benchmarks": {
+    "code": [
+      {
+        "id": "code-001",
+        "task": "Écris une fonction debounce en TypeScript avec types génériques, gestion du cancel, et JSDoc complet.",
+        "criteria": ["types génériques corrects", "gestion cancel()", "JSDoc avec @param et @returns", "code ES6+"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "code-002",
+        "task": "Écris une classe TypeScript Repository<T> avec méthodes CRUD (create, read, update, delete) et pagination. Utilise un pattern Repository.",
+        "criteria": ["générique <T>", "CRUD complet", "pagination offset/limit", "typage strict", "gestion erreurs"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "code-003",
+        "task": "Corrige ce code : function sanitize(input) { return input.replace('<script>', ''); }",
+        "criteria": ["identifie la faille XSS", "corrige avec DOMPurify ou échappement complet", "explique pourquoi le replace simple est insuffisant"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "code-004",
+        "task": "Écris un middleware Express qui fait du rate limiting par IP avec fenêtre glissante, sans dépendance externe.",
+        "criteria": ["fenêtre glissante (pas fixe)", "nettoyage mémoire", "headers X-RateLimit-*", "status 429", "configurable"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "code-005",
+        "task": "Implémente un système de cache LRU en JavaScript avec TTL (expiration) et taille maximale.",
+        "criteria": ["LRU correct (Map ordered)", "TTL fonctionnel", "taille max respectée", "méthodes get/set/delete/clear", "complexité O(1)"],
+        "difficulty": "hard",
+        "custom": false
+      }
+    ],
+    "security": [
+      {
+        "id": "sec-001",
+        "task": "Audite ce code Express : app.post('/login', (req, res) => { const {user, pass} = req.body; db.query(`SELECT * FROM users WHERE name='${user}' AND pass='${pass}'`); });",
+        "criteria": ["identifie injection SQL", "identifie password en clair", "identifie absence validation", "propose correction complète", "mentionne bcrypt"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "sec-002",
+        "task": "Liste tous les headers HTTP de sécurité nécessaires pour une application web en production, avec les valeurs recommandées et pourquoi.",
+        "criteria": ["CSP", "HSTS", "X-Frame-Options", "X-Content-Type-Options", "Referrer-Policy", "Permissions-Policy", "valeurs correctes"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "sec-003",
+        "task": "Conçois un système d'authentification complet : inscription, connexion, refresh token, logout. Détaille le flow et les protections.",
+        "criteria": ["bcrypt/argon2 pour passwords", "JWT access (15min) + refresh (7j)", "rotation des refresh tokens", "blacklist logout", "rate limiting login"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "sec-004",
+        "task": "Ce code React est-il sécurisé ? function Comment({text}) { return <div dangerouslySetInnerHTML={{__html: text}} />; }",
+        "criteria": ["identifie XSS stored", "explique dangerouslySetInnerHTML", "propose DOMPurify", "montre le code corrigé"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "sec-005",
+        "task": "Audite la configuration CORS suivante : app.use(cors({ origin: '*', credentials: true }));",
+        "criteria": ["identifie wildcard + credentials = danger", "explique l'attaque possible", "propose origin whitelist", "mentionne SameSite cookies"],
+        "difficulty": "medium",
+        "custom": false
+      }
+    ],
+    "frontend": [
+      {
+        "id": "front-001",
+        "task": "Crée un composant React de formulaire de contact (nom, email, message) avec validation côté client, états de chargement et d'erreur.",
+        "criteria": ["validation email regex", "états loading/error/success", "accessibilité (labels, aria)", "responsive", "pas de styles inline"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "front-002",
+        "task": "Crée un composant React de navigation responsive avec menu hamburger pour mobile. HTML5 sémantique obligatoire.",
+        "criteria": ["<nav> sémantique", "menu hamburger fonctionnel", "breakpoint mobile", "aria-expanded", "transition CSS"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "front-003",
+        "task": "Corrige ce composant : function UserList() { const [users, setUsers] = useState([]); fetch('/api/users').then(r => r.json()).then(setUsers); return users.map(u => <p>{u.name}</p>); }",
+        "criteria": ["identifie fetch dans le render (boucle infinie)", "useEffect avec []", "gestion loading/error", "key sur le map", "cleanup abort"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "front-004",
+        "task": "Crée un système de thème dark/light mode en CSS avec variables CSS et un toggle React. Le thème doit persister en localStorage.",
+        "criteria": ["CSS custom properties", "prefers-color-scheme", "localStorage persistance", "transition douce", "toggle accessible"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "front-005",
+        "task": "Crée une grille CSS responsive de cartes produits (image, titre, prix, bouton). 3 colonnes desktop, 2 tablette, 1 mobile.",
+        "criteria": ["CSS Grid ou Flexbox", "breakpoints cohérents", "images responsive (aspect-ratio)", "hover states", "mobile-first"],
+        "difficulty": "medium",
+        "custom": false
+      }
+    ],
+    "backend": [
+      {
+        "id": "back-001",
+        "task": "Conçois un endpoint REST API pour un CRUD utilisateurs (GET/POST/PUT/DELETE /api/users) avec validation, pagination et gestion d'erreurs.",
+        "criteria": ["4 routes RESTful", "validation body (zod/joi)", "pagination offset/limit", "codes HTTP corrects", "gestion erreurs centralisée"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "back-002",
+        "task": "Écris un schéma Prisma pour un blog : User (id, name, email), Post (id, title, content, published, authorId), Comment (id, text, postId, authorId). Avec les relations.",
+        "criteria": ["relations 1-N correctes", "types corrects", "index sur les FK", "createdAt/updatedAt", "@@map si nécessaire"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "back-003",
+        "task": "Implémente un système de file d'attente (job queue) simple avec Redis et Bull/BullMQ pour envoyer des emails en arrière-plan.",
+        "criteria": ["connexion Redis", "définition job", "worker avec retry", "gestion erreurs", "logging"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "back-004",
+        "task": "Écris un middleware d'authentification JWT pour Fastify qui vérifie le token, extrait l'utilisateur, et gère les cas d'erreur.",
+        "criteria": ["vérification signature", "expiration", "extraction payload", "401 si invalide", "403 si expiré", "pas de secret hardcodé"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "back-005",
+        "task": "Conçois le schéma SQL pour un système de permissions RBAC (Role-Based Access Control) avec users, roles, permissions et les tables de jointure.",
+        "criteria": ["table users", "table roles", "table permissions", "user_roles (N-N)", "role_permissions (N-N)", "contraintes FK"],
+        "difficulty": "hard",
+        "custom": false
+      }
+    ],
+    "i18n": [
+      {
+        "id": "i18n-001",
+        "task": "Traduis en anglais, espagnol et portugais : 'Votre compte a été créé avec succès. Vous recevrez un email de confirmation dans les prochaines minutes.'",
+        "criteria": ["anglais naturel", "espagnol idiomatique", "portugais (BR) correct", "ton professionnel", "pas de traduction littérale"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "i18n-002",
+        "task": "Crée un fichier i18n JSON pour un e-commerce : panier, checkout, paiement, confirmation. En FR, EN, AR (arabe). Gère le RTL.",
+        "criteria": ["clés sémantiques", "pluralisation", "formatage prix", "direction RTL mentionnée", "30+ clés minimum"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "i18n-003",
+        "task": "Corrige ces traductions anglaises : 'Please to enter your informations of connection' et 'The product have been added at your basket'.",
+        "criteria": ["identifie les calques du français", "propose corrections naturelles", "explique les erreurs"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "i18n-004",
+        "task": "Écris la configuration i18next pour un projet React avec : détection de langue, fallback, lazy loading des namespaces, et interpolation.",
+        "criteria": ["i18next init correct", "LanguageDetector", "fallbackLng", "ns et defaultNS", "interpolation escapeValue"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "i18n-005",
+        "task": "Traduis cette interface de dashboard en japonais et coréen : 'Dashboard', 'Total Revenue', 'Active Users', 'Monthly Growth', 'Export Report', 'Settings'.",
+        "criteria": ["japonais correct (katakana/kanji appropriés)", "coréen correct", "cohérence terminologique", "adapté au contexte business"],
+        "difficulty": "medium",
+        "custom": false
+      }
+    ],
+    "design": [
+      {
+        "id": "design-001",
+        "task": "Propose un design system (couleurs, typographie, espacements) pour une application SaaS B2B de gestion de projet. Justifie chaque choix.",
+        "criteria": ["palette primaire/secondaire/neutre", "échelle typographique", "grille 8px", "contraste WCAG AA", "justifications UX"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "design-002",
+        "task": "Critique cette page d'accueil : header avec 12 liens de navigation, hero avec 3 paragraphes de texte, 8 boutons CTA différents, aucun espace blanc.",
+        "criteria": ["identifie surcharge cognitive", "recommande max 5-7 liens nav", "1 CTA principal", "hiérarchie visuelle", "whitespace"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "design-003",
+        "task": "Conçois le flow UX d'un processus de checkout en 3 étapes (panier → livraison → paiement). Détaille chaque écran.",
+        "criteria": ["progression claire (stepper)", "récapitulatif panier", "formulaire livraison", "sécurité paiement", "confirmation", "gestion erreurs"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "design-004",
+        "task": "Propose un système de composants pour un formulaire complexe : inputs, selects, radio, checkbox, date picker, file upload. Spécifie les états.",
+        "criteria": ["états : default, focus, filled, error, disabled", "labels et placeholders", "messages d'erreur", "tailles touch 44x44px", "accessibilité"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "design-005",
+        "task": "Évalue l'accessibilité d'un bouton : <div onclick='submit()' style='background:red;color:#ff6666;font-size:10px;padding:2px'>Envoyer</div>",
+        "criteria": ["pas de <button> sémantique", "contraste insuffisant", "taille trop petite", "pas de focus", "pas de role/tabindex", "corrections proposées"],
+        "difficulty": "easy",
+        "custom": false
+      }
+    ],
+    "legal": [
+      {
+        "id": "legal-001",
+        "task": "Rédige une politique de confidentialité RGPD complète pour une application SaaS qui collecte : nom, email, adresse IP, cookies analytics.",
+        "criteria": ["identité responsable", "données collectées", "base légale", "durée conservation", "droits utilisateurs", "contact DPO"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "legal-002",
+        "task": "Un site e-commerce français utilise Google Analytics sans consentement. Quels sont les risques juridiques et comment se mettre en conformité ?",
+        "criteria": ["décision CNIL", "transfert UE→US", "consentement obligatoire", "alternatives (Matomo)", "risques amendes", "étapes conformité"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "legal-003",
+        "task": "Rédige une bannière de cookies conforme RGPD avec les 3 niveaux : nécessaires (toujours actifs), analytiques (opt-in), marketing (opt-in).",
+        "criteria": ["consentement granulaire", "pas de pre-check", "bouton refuser aussi visible que accepter", "lien politique cookies", "stockage du choix"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "legal-004",
+        "task": "Un utilisateur demande la suppression complète de ses données (droit à l'effacement RGPD Art. 17). Détaille la procédure technique et juridique.",
+        "criteria": ["vérification identité", "délai 1 mois", "données à supprimer vs conserver (légal)", "notification sous-traitants", "confirmation écrite", "exceptions"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "legal-005",
+        "task": "Quelles mentions légales sont obligatoires pour un site web français ? Liste complète avec les textes de loi.",
+        "criteria": ["loi LCEN 2004", "identité éditeur", "hébergeur", "CNIL", "directeur publication", "capital social si entreprise"],
+        "difficulty": "easy",
+        "custom": false
+      }
+    ],
+    "vision": [
+      {
+        "id": "vision-001",
+        "task": "Décris cette maquette UI en détail : header, layout, composants, couleurs, typographie, espacement. Comme si tu devais la recréer en CSS.",
+        "criteria": ["structure identifiée", "couleurs hex/rgb", "tailles approximatives", "composants listés", "responsive mentionné"],
+        "difficulty": "medium",
+        "custom": false,
+        "note": "Nécessite une image en entrée — utiliser une capture d'écran de test"
+      },
+      {
+        "id": "vision-002",
+        "task": "Extrais tout le texte visible de cette capture d'écran (OCR). Organise-le par sections.",
+        "criteria": ["texte complet extrait", "organisation par zones", "pas de texte inventé", "mise en forme conservée"],
+        "difficulty": "easy",
+        "custom": false,
+        "note": "Nécessite une image en entrée"
+      },
+      {
+        "id": "vision-003",
+        "task": "Compare ces deux versions de maquette et liste toutes les différences visuelles.",
+        "criteria": ["différences de layout", "changements de couleurs", "modifications de texte", "éléments ajoutés/supprimés"],
+        "difficulty": "hard",
+        "custom": false,
+        "note": "Nécessite deux images en entrée"
+      },
+      {
+        "id": "vision-004",
+        "task": "Analyse cette capture d'écran d'erreur et identifie le problème. Propose une solution.",
+        "criteria": ["message d'erreur identifié", "cause probable", "solution proposée", "pas d'hallucination"],
+        "difficulty": "medium",
+        "custom": false,
+        "note": "Nécessite une image d'erreur en entrée"
+      },
+      {
+        "id": "vision-005",
+        "task": "Évalue l'accessibilité visuelle de cette page : contraste, taille texte, hiérarchie, zones cliquables.",
+        "criteria": ["contraste évalué", "taille texte commentée", "hiérarchie analysée", "recommandations WCAG"],
+        "difficulty": "medium",
+        "custom": false,
+        "note": "Nécessite une image en entrée"
+      }
+    ],
+    "generalist": [
+      {
+        "id": "gen-001",
+        "task": "Compare les avantages et inconvénients de 3 approches pour un système de cache : Redis, Memcached, et cache in-memory Node.js.",
+        "criteria": ["tableau comparatif", "critères pertinents", "recommandation selon le cas", "pas de biais", "sources/faits vérifiables"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "gen-002",
+        "task": "Rédige un email professionnel pour annoncer une migration de base de données planifiée avec 2h de downtime ce weekend.",
+        "criteria": ["ton professionnel", "date/heure précises", "impact décrit", "actions utilisateur", "contact support", "concis"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "gen-003",
+        "task": "Brainstorme 10 noms pour une startup de gestion de tâches collaborative. Les noms doivent être courts, mémorisables, avec domaine .com potentiellement libre.",
+        "criteria": ["10 noms proposés", "courts (< 10 chars)", "mémorisables", "pertinents au domaine", "créatifs"],
+        "difficulty": "easy",
+        "custom": false
+      },
+      {
+        "id": "gen-004",
+        "task": "Explique le concept de microservices à un développeur junior. Utilise une analogie du monde réel. Donne les avantages, inconvénients et quand les utiliser.",
+        "criteria": ["analogie claire", "avantages listés", "inconvénients listés", "cas d'usage", "adapté au niveau junior"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "gen-005",
+        "task": "Analyse cette architecture et identifie les SPOF (Single Points of Failure) : 1 load balancer → 2 serveurs web → 1 base PostgreSQL → 1 Redis cache.",
+        "criteria": ["SPOF identifiés (LB, DB, Redis)", "solutions pour chaque (HA, réplication, sentinel)", "priorisation", "schéma amélioré"],
+        "difficulty": "hard",
+        "custom": false
+      }
+    ],
+    "collab": [
+      {
+        "id": "collab-001",
+        "task": "SECURITY audite ce composant React et FRONTEND corrige les failles : function Login() { const [pass, setPass] = useState(''); return <form action='/login'><input value={pass} onChange={e => setPass(e.target.value)} /><div dangerouslySetInnerHTML={{__html: pass}} /><button type='submit'>Login</button></form>; }",
+        "agents": ["security", "frontend"],
+        "criteria": ["security identifie XSS + form non sécurisé", "frontend corrige avec code accessible et sécurisé", "communication claire entre les 2", "résultat final intègre les recommandations sécu"],
+        "difficulty": "medium",
+        "custom": false
+      },
+      {
+        "id": "collab-002",
+        "task": "BACKEND crée un endpoint API REST pour un système de commentaires (CRUD), SECURITY audite le code produit, puis BACKEND corrige selon les recommandations.",
+        "agents": ["backend", "security"],
+        "criteria": ["backend produit un CRUD fonctionnel", "security identifie les failles (injection, XSS, auth)", "backend corrige en intégrant les recommandations", "code final sécurisé"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "collab-003",
+        "task": "DESIGN propose le design system d'une page de profil utilisateur, FRONTEND l'implémente en React, I18N traduit les textes en 3 langues (FR/EN/AR).",
+        "agents": ["design", "frontend", "i18n"],
+        "criteria": ["design fournit tokens + layout + composants", "frontend implémente fidèlement avec accessibilité", "i18n traduit avec clés sémantiques et RTL", "cohérence du résultat final"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "collab-004",
+        "task": "CODE écrit une fonction de paiement Stripe, LEGAL vérifie la conformité RGPD du traitement des données bancaires, CODE ajuste selon les retours.",
+        "agents": ["code", "legal"],
+        "criteria": ["code fonctionnel Stripe", "legal identifie les problèmes RGPD", "code corrigé intègre les recommandations légales", "documentation des bases légales"],
+        "difficulty": "hard",
+        "custom": false
+      },
+      {
+        "id": "collab-005",
+        "task": "GENERALIST rédige les spécifications d'une feature 'notifications push', BACKEND implémente l'API, FRONTEND crée le composant de notification.",
+        "agents": ["generalist", "backend", "frontend"],
+        "criteria": ["specs claires et complètes", "API REST conforme aux specs", "composant frontend fidèle aux specs", "cohérence entre les 3 livrables"],
+        "difficulty": "hard",
+        "custom": false
+      }
+    ]
+  }
+}

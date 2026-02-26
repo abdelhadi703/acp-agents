@@ -1,0 +1,33 @@
+{
+  "name": "security",
+  "displayName": "Security Agent",
+  "description": "Agent spécialisé en sécurité informatique et audit. Expert en détection de vulnérabilités, tests de pénétration, normes OWASP et protection contre les injections XSS.",
+  "version": "2.0",
+  "protocol": "acp+a2a",
+  "provider": {
+    "organization": "GLM",
+    "url": "http://localhost:8007"
+  },
+  "capabilities": {
+    "streaming": true,
+    "multimodal": false,
+    "tools": false,
+    "thinking": false
+  },
+  "model": {
+    "name": "cogito-2.1:671b-cloud",
+    "parameters": "671B",
+    "system": "ollama",
+    "contextLength": 671000
+  },
+  "endpoints": {
+    "message": "/message",
+    "stream": "/message/stream",
+    "status": "/status",
+    "delegate": "/delegate",
+    "card": "/.well-known/agent.json",
+    "sessions": "/sessions",
+    "discover": "/agents/discover"
+  },
+  "skills": ["audit", "vulnerability-detection", "owasp", "pentest", "xss", "injection"]
+}
