@@ -24,6 +24,9 @@ sessions/*.json
 # PID files
 .agents.pid
 
+# Auth token (secret)
+.acp_token
+
 # AMBER ICI runtime data
 state/
 uploads/

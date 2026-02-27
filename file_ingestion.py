@@ -99,12 +99,19 @@ def extract_text_pdf(data: bytes) -> str:
     return "\n".join(text_parts)
 
 
+MAX_DOCX_DECOMPRESSED = 50 * 1024 * 1024  # 50 MB max décompressé (anti zip bomb)
+
 def extract_text_docx(data: bytes) -> str:
-    """Extraire le texte d'un DOCX (ZIP + XML)."""
+    """Extraire le texte d'un DOCX (ZIP + XML). Protégé contre zip bombs."""
     try:
         with zipfile.ZipFile(BytesIO(data)) as zf:
             names = zf.namelist()
             if 'word/document.xml' not in names:
+                return ""
+            # Protection zip bomb : vérifier la taille décompressée
+            info = zf.getinfo('word/document.xml')
+            if info.file_size > MAX_DOCX_DECOMPRESSED:
+                logger.warning(f"DOCX zip bomb détecté: {info.file_size} bytes décompressés")
                 return ""
             xml_content = zf.read('word/document.xml').decode('utf-8', errors='replace')
             texts = re.findall(r'<w:t[^>]*>(.*?)</w:t>', xml_content)
