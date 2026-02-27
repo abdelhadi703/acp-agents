@@ -88,8 +88,7 @@ class VectorStore:
                 if embedding:
                     return embedding
                 return None
-        except Exception as e:
-            logger.error(f"Erreur embedding: {e}")
+        except Exception:
             return None
 
     async def index(self, text: str, metadata: Optional[Dict] = None) -> Optional[str]:

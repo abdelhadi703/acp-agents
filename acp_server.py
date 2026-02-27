@@ -17,6 +17,8 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s] %(message)s')
 logger = logging.getLogger("acp")
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 # Features AMBER ICI
 from vector_store import VectorStore
@@ -267,17 +269,8 @@ class ACPAgent:
                     self.total_eval_tokens += eval_tokens
                     self.message_count += 1
                 content = result["message"]["content"]
-                # Auto-indexation dans le vector store
-                try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
-                        asyncio.ensure_future(
-                            ACPAgent._vector_store.index(content, metadata={
-                                "agent": self.name, "type": "response"
-                            })
-                        )
-                except Exception:
-                    pass
+                # Auto-indexation désactivée (nomic-embed-text non dispo en cloud)
+                # Utiliser POST /archive/index manuellement si besoin
                 return content
         except Exception as e:
             logger.error(f"Erreur call_ollama: {e}")
